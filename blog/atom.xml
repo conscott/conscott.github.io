@@ -1,0 +1,27 @@
+---
+layout: feed
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>Conor Scott's Blog</title>
+ <link href="http://conscott.github.io/blog/atom.xml" rel="self"/>
+ <link href="http://conscott.github.io/blog"/>
+ <updated>{{ site.time | date_to_xmlschema }}</updated>
+ <id>http://conscott.github.io/blog</id>
+ <author>
+   <name>Conor Scott</name>
+   <email>conor.r.scott.88@gmail.com</email>
+ </author>
+
+ {% for post in site.posts %}
+ <entry>
+   <title>{{ post.title }}</title>
+   <link href="http://conscott.github.io{{ post.url }}"/>
+   <updated>{{ post.date | date_to_xmlschema }}</updated>
+   <id>http://conscott.github.io/{{ post.id }}</id>
+   <content type="html">{{ post.content | xml_escape }}</content>
+ </entry>
+ {% endfor %}
+ 
+</feed>
