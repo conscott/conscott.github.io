@@ -8,19 +8,6 @@ body {
     color: #222222;
 }
 
-.flex-container {
-  display: flex;
-}
-
-.mypic {
-    width: auto;
-    max-height: 300px;
-    margin-left: 50%;
-    margin-bottom: 5%;
-    border: solid black;
-    border-width: 5px;
-}
-
 a { text-decoration: none; color: #006699; }
 a:hover { text-decoration: underline; }
 
@@ -33,7 +20,13 @@ h3 { font-size: 2.3em; }
 h4 { font-size: .9em; }
 
 /* Nav bar */
-nav ul { font-size: 1em; font-family: 'Helvetica', 'Arial', 'Sans-Serif'; padding: 0px; list-style: none; font-weight: bold; }
+nav ul {
+    font-size: 1em; 
+    font-family: 'Helvetica', 'Arial', 'Sans-Serif'; 
+    padding: 0px; 
+    list-style: none; 
+    font-weight: bold;
+}
 nav ul li { display: inline; margin-right: 20px; }
 
 /* Donate footer */
@@ -43,3 +36,17 @@ footer td {padding:0 10px 0 0}
 /* Blog */
 ul.posts { margin: 20px auto 40px; font-size: 1.5em; }
 ul.posts li { list-style: none; }
+
+.flex-container {
+  display: flex;
+}
+
+/* My picture */
+.mypic {
+    width: auto;
+    max-height: 300px;
+    margin-left: 50%;
+    margin-bottom: 5%;
+    border: solid black;
+    border-width: 5px;
+}
