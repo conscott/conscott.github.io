@@ -2,10 +2,10 @@ body {
     margin: 60px auto; 
     width: 70%; 
     height: 100%;
-    background: linear-gradient(to top left, #ffffff, #dddddd); 
     background-repeat: no-repeat;
+    background-color: #EEEEEE;
     background-attachment: fixed;
-    color: #222222;
+    color: #434E3C;
 }
 
 a { text-decoration: none; color: #006699; }
@@ -30,8 +30,8 @@ nav ul {
 nav ul li { display: inline; margin-right: 20px; }
 
 /* Donate footer */
-footer { border-top: 1px solid #d5d5d5; padding 2px; font-size: .8em; }
-footer td {padding:0 10px 0 0}
+footer { border-top: 1px solid #d5d5d5; padding 2px; font-size: .9em; }
+footer td {padding: 0 10px 0 0}
 
 /* Blog */
 ul.posts { margin: 20px auto 40px; font-size: 1.5em; }
@@ -45,7 +45,7 @@ ul.posts li { list-style: none; }
 .mypic {
     width: auto;
     max-height: 300px;
-    margin-left: 50%;
+    margin-left: 40%;
     margin-bottom: 5%;
     border: solid black;
     border-width: 5px;
