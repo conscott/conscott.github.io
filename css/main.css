@@ -71,3 +71,46 @@ tr {
     border: 1px solid #999;
     padding: 0.5rem;
 }
+
+.lightning_tip {
+    font-family: 'Arial';
+    font-size: 1.5em;
+}
+
+.input_readonly {
+    border: none;
+    width: auto;
+}
+
+button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: green;
+    color: white;
+    padding: 10px 10px;
+    border-width: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1.2em;
+}
+
+.column {
+    float: left;
+    width: 20%;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+    padding: 10px 10px;
+}
+
+.bolt {
+    width: 50%;
+    padding: 10px;
+    border: solid gray;
+    border-width: 2px;
+    word-wrap: break-word;
+}

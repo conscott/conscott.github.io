@@ -1,0 +1,40 @@
+---
+layout: default
+title: Lightning Tip
+---
+
+
+<div class="lightning_tip">
+    <h1>Old School Lightning Tip Interface</h1>
+
+    <!-- Step 1: Show Invoice Input -->
+    <div id="make_invoice">
+        <div class="row">
+            <div class="column"><label for="amount">Tip in satoshis</label></div>
+            <div class="column"><input type="text" id="amount" name=amount" value="1000"></div>
+        </div>
+        <div class="row">
+            <div class="column"><label for="amount">USD Value</label></div>
+            <div class="column"><input name='amount_usd' id='amount_usd' class="input_readonly" placeholder="0" readonly></div>
+        </div>
+
+        <button type="button" id="submit_amount">Generate Invoice!</button>
+    </div>
+
+    <!-- Step 2: Display Bolt 11 Invoice -->
+    <div id="bolt11_invoice" style="display: none">
+        <p>Bolt 11 Invoice</p>
+        <div id="bolt11_inv" class="bolt"></div>
+        <br>
+        <div>Expires in <span id="seconds_left"></span></div>
+        <br>
+        <button type="button" id="copy_invoice">Copy To Clipboard!</button>
+    </div>
+
+    <!-- Step 3: Show paid status -->
+    <div id='payment_status' style="display: none">
+        <p>Invoice Paid. Thank You!</p>
+    </div>
+</div>
+
+<script src="./index.js"></script>
