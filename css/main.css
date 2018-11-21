@@ -48,6 +48,7 @@ ul.posts li { list-style: none; }
 }
 
 .lightning_info {
+    font-size:.9em;
     border-top: 2px solid lightgray;
     border-bottom: 2px solid lightgray;
 }
@@ -60,7 +61,6 @@ ul.posts li { list-style: none; }
 .ln_table {
     margin-bottom: 15px;
     font-family: 'Arial';
-    font-size: 0.9em;
 }
 
 table {
