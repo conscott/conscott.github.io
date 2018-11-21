@@ -116,6 +116,10 @@ button:disabled {
     background-color: lightgray;
 }
 
+button:active {
+    background-color: lightblue;
+}
+
 .column {
     float: left;
     width: 20%;
