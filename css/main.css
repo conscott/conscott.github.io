@@ -1,6 +1,6 @@
 body {
     margin: 60px auto; 
-    width: 70%; 
+    width: 80%; 
     height: 100%;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -9,8 +9,8 @@ body {
 
 a { text-decoration: none; color: #006699; }
 a:hover { text-decoration: underline; }
-
 p, ul { font-size: 1.5em; line-height: 1.4em;}
+
 
 h1, h2, h3, h4 { font-family: 'Helvetica', 'Arial', 'Sans-Serif'; }
 h1 { font-size: 3em;  }
@@ -28,17 +28,14 @@ nav ul {
 }
 nav ul li { display: inline; margin-right: 20px; }
 
-/* Donate footer */
-footer { border-top: 1px solid #d5d5d5; padding 2px; font-size: .9em; }
-footer td {padding: 0 10px 0 0}
-
 /* Blog */
 ul.posts { margin: 20px auto 40px; font-size: 1.5em; }
 ul.posts li { list-style: none; }
 
-.flex-container {
+.contact_info {
   display: flex;
 }
+
 
 /* My picture */
 .mypic {
@@ -48,6 +45,16 @@ ul.posts li { list-style: none; }
     margin-bottom: 5%;
     border: solid black;
     border-width: 5px;
+}
+
+.lightning_info {
+    border-top: 2px solid lightgray;
+    border-bottom: 2px solid lightgray;
+}
+
+.tip_parts {
+    padding-top: 15px;
+    font-size: 0.9em;
 }
 
 .ln_table {
@@ -74,25 +81,39 @@ tr {
 
 .lightning_tip {
     font-family: 'Arial';
-    font-size: 1.5em;
+    font-size: 1.2em;
+}
+
+.input_amount {
+    border-radius: .5em;
+    text-align: center;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 .input_readonly {
-    border: none;
-    width: auto;
+    border-radius: .5em;
+    background-color: palegreen;
+    text-align: center;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 button {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    background-color: green;
+    border-radius: 0.8em;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: navy;
+    border-color: black;
     color: white;
     padding: 10px 10px;
     border-width: 5px;
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 1.2em;
+    font-size: 1.0em;
+}
+
+button:disabled {
+    background-color: lightgray;
 }
 
 .column {
@@ -108,9 +129,15 @@ button {
 }
 
 .bolt {
-    width: 50%;
+    width: 60%;
     padding: 10px;
+    border-radius: .5em;
     border: solid gray;
-    border-width: 2px;
+    border-width: 1px;
     word-wrap: break-word;
+}
+
+.info_footer {
+    border-top: 1px solid lightgray;
+    font-size: 0.5em;
 }

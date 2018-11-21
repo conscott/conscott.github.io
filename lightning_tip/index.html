@@ -5,19 +5,19 @@ title: Lightning Tip
 
 
 <div class="lightning_tip">
-    <h1>Old School Lightning Tip Interface</h1>
+
+    <h2>Fucking Cool Ass Lightning Tip Interface</h2>
 
     <!-- Step 1: Show Invoice Input -->
     <div id="make_invoice">
         <div class="row">
             <div class="column"><label for="amount">Tip in satoshis</label></div>
-            <div class="column"><input type="text" id="amount" name=amount" value="1000"></div>
+            <div class="column"><input class="input_amount" type="text" id="amount" name=amount" value="1000"></div>
         </div>
         <div class="row">
             <div class="column"><label for="amount">USD Value</label></div>
-            <div class="column"><input name='amount_usd' id='amount_usd' class="input_readonly" placeholder="0" readonly></div>
+            <div class="column"><input class="input_readonly" name='amount_usd' id='amount_usd' placeholder="0" readonly></div>
         </div>
-
         <button type="button" id="submit_amount">Generate Invoice!</button>
     </div>
 
@@ -25,16 +25,29 @@ title: Lightning Tip
     <div id="bolt11_invoice" style="display: none">
         <p>Bolt 11 Invoice</p>
         <div id="bolt11_inv" class="bolt"></div>
+        <button type="button" id="copy_invoice">Copy To Clipboard!</button>
+        <br>
+        <div style="font-size: 0.7em">Peer: 02251c2b931203848152b1c52e63ee91c74f53b0bfa8dd634a9b016d7b77c5afa9@104.248.136.82:9735</div>
         <br>
         <div>Expires in <span id="seconds_left"></span></div>
         <br>
-        <button type="button" id="copy_invoice">Copy To Clipboard!</button>
     </div>
 
     <!-- Step 3: Show paid status -->
     <div id='payment_status' style="display: none">
         <p>Invoice Paid. Thank You!</p>
     </div>
+    <br>
+    <div class='info_footer'>
+        <p>Interested in doing the same?</p>
+        <p>Check out my dead simple REST API for receiving c-lightning payments
+            <a href='https://github.com/conscott/get-lightning-paid' target="_blank">here</a>
+        </p>
+        <p>And the source for this page 
+            <a href='https://github.com/conscott/conscott.github.io' target="_blank">here</a>
+            artfully using <a href='http://vanilla-js.com/' target="_blank">VanillaJS</a>
+            (because I can't frontend).
+    </div>
 </div>
 
-<script src="./index.js"></script>
+<script type="module" src="./index.js"></script>

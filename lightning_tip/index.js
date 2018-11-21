@@ -1,8 +1,47 @@
-const btc_price_url = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/';
-const post_invoice_url = 'http://localhost:5000/api/post_test_invoice';
-const check_invoice_url = 'http://localhost:5000/api/check_fake_invoice/fake_label';
+import {API_HOST} from './config.js'
 
+// CoinMarketCap Price API
+const btc_price_url = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/';
+
+
+// Talking to Flask API
+let post_invoice_url = API_HOST + '/api/generate_invoice';
+let check_invoice_url = API_HOST + '/api/check_invoice/';
+let wait_invoice_url = API_HOST + '/api/wait_invoice/';
+
+const test = false;
+if (test) {
+    post_invoice_url = API_HOST + '/test/generate_invoice';
+    check_invoice_url = API_HOST + '/test/check_invoice/fake_label';
+    wait_invoice_url = API_HOST + '/test/check_invoice/fake_label';
+}
+
+// 
+//  Shortcut methods - who needs jQuery
+//  
+function get_elem(element_name) {
+    return document.getElementById(element_name)
+}
+
+function show_element(element_name) {
+    get_elem(element_name).style.display = 'block';
+}
+
+function hide_element(element_name) {
+    get_elem(element_name).style.display = 'none';
+}
+
+// Zero pad a number
+Number.prototype.pad = function(size) {
+    var s = String(this);
+    while (s.length < (size || 2)) {s = "0" + s;}
+    return s;
+}
+
+// Simple client wrapper for requests
 var HttpClient = function() {
+
+    // GET
     this.get = function(aUrl, aCallback) {
         var anHttpRequest = new XMLHttpRequest();
         anHttpRequest.onreadystatechange = function() { 
@@ -20,69 +59,86 @@ var HttpClient = function() {
             if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
                 aCallback(anHttpRequest.responseText);
         }
-
         anHttpRequest.open("POST", aUrl, true );            
         anHttpRequest.setRequestHeader("Content-Type", "application/json");
         anHttpRequest.send(payload);
     }
 }
 
+// Set the USD value of the Bolt11 invoice based 
+// CoinMarketCap API price
 function setUsdValue() {
-    let amount =  Number(document.getElementById('amount').value);
+    let amount =  Number(get_elem('amount').value);
     if (isNaN(amount)) {
-        document.getElementById('amount_usd').value = "Not a number";
-        document.getElementById('submit_amount').disabled = true;
+        get_elem('amount_usd').value = "Not a number";
+        get_elem('submit_amount').disabled = true;
         return;
     }
     if (amount < 0) {
-        document.getElementById('amount_usd').value = "Value is negative";
-        document.getElementById('submit_amount').disabled = true;
+        get_elem('amount_usd').value = "Value is negative";
+        get_elem('submit_amount').disabled = true;
+        return;
+    }
+    if (amount === 0) {
+        get_elem('amount_usd').value = "$ 0.00";
+        get_elem('submit_amount').disabled = true;
+        return;
+    }
+    if (amount > 10000000) {
+        get_elem('amount_usd').value = "Don't Troll!";
+        get_elem('submit_amount').disabled = true;
         return;
     }
 
-    document.getElementById('submit_amount').disabled = false;
+    get_elem('submit_amount').disabled = false;
     
+    // Fetch price data and set element
     let client = new HttpClient();
     client.get(btc_price_url, function(json_response) {
         let data = JSON.parse(json_response);
         let btc_price = Number(data[0].price_usd);
         let tip_amout = 0.0;
         let amount_no_trunc = btc_price * (amount / 100000000);
+        let tip_amount;
         if (amount_no_trunc > 0.05) {
             tip_amount = Math.floor(amount_no_trunc * 100) / 100;
         } else {
             tip_amount = Math.floor(amount_no_trunc * 100000) / 100000;
         }
-        document.getElementById('amount_usd').value = '$ ' + tip_amount;
+        get_elem('amount_usd').value = '$ ' + tip_amount;
     });
 
 }
 
+// Bolt11 expiry countdown
 function updateExpiration(expiration) {
+
+    // Now in seconds
     const now = Math.round((new Date().getTime()) / 1000);
 
     // Find the distance between now and the count down date
     var distance = expiration - now;
     var minutes = Math.floor((distance % (60 * 60)) / 60);
     var seconds = Math.floor(distance % 60);
+    
 
     // Set in mm:ss format
-    document.getElementById("seconds_left").innerHTML = "" + minutes + ":" + seconds;
+    get_elem("seconds_left").innerHTML = "" + (minutes).pad(2) + ":" + (seconds).pad(2);
 }
 
 
 // Process input amount and make bolt 11 invoice
 function processAmount() {
-    console.log("Click amount...");
-    let amount =  Number(document.getElementById('amount').value);
-    if (isNaN(amount) || amount < 0) {
+    
+    let amount =  Number(get_elem('amount').value);
+    if (isNaN(amount) || amount <= 0) {
         return;
     }
     
     let amount_msatoshi = amount * 1000;
     let expiry = 600;
 
-    post_data = {
+    let post_data = {
         'msatoshi': amount_msatoshi,
         'expiry': expiry
     }
@@ -98,26 +154,32 @@ function processAmount() {
         const now = Math.round((new Date().getTime()) / 1000);
         let expires = now + 600;
 
-        document.getElementById('make_invoice').style.display = 'none';
-        document.getElementById('bolt11_inv').innerHTML = bolt11;
-        document.getElementById('bolt11_invoice').style.display = 'block';
+        hide_element('make_invoice');
+        get_elem('bolt11_inv').innerHTML = bolt11;
+        show_element('bolt11_invoice');
 
         setInterval(function() { updateExpiration(expires) }, 1);
-        
-        client.get(check_invoice_url, function(json_response) {
-            document.getElementById('bolt11_invoice').style.display = 'none';
-            document.getElementById('payment_status').style.display = 'block';
+
+        wait_invoice_url = wait_invoice_url + label
+        // Wait for invoice completion
+        client.get(wait_invoice_url, function(json_response) {
+            hide_element('bolt11_invoice');
+            show_element('payment_status');
         });
-    
     });
 }
 
-function copyToClipboard() {
+
+// Copy bolt11 text to clipboard
+function copyBoltToClipboard() {
+
+    // Select it
     var range = document.createRange();
-    range.selectNode(document.getElementById('bolt11_inv'));
+    range.selectNode(get_elem('bolt11_inv'));
     window.getSelection().addRange(range);
     document.execCommand("copy");
 
+    // Remove selection
     var sel = window.getSelection ? window.getSelection() : document.selection;
     if (sel) {
         if (sel.removeAllRanges) {
@@ -130,6 +192,6 @@ function copyToClipboard() {
 
 setUsdValue();
 
-document.getElementById('amount').addEventListener("input", setUsdValue);
-document.getElementById('submit_amount').addEventListener("click", processAmount);
-document.getElementById('copy_invoice').addEventListener("click", copyToClipboard);
+get_elem('amount').addEventListener("input", setUsdValue);
+get_elem('submit_amount').addEventListener("click", processAmount);
+get_elem('copy_invoice').addEventListener("click", copyBoltToClipboard);
