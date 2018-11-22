@@ -1,1 +1,2 @@
-export const API_HOST = 'https://conscott.info:5000';
+// Going to proxy_pass requests to actual api
+export const API_PROXY = 'https://conscott.info'

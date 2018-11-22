@@ -1,18 +1,18 @@
-import {API_HOST} from './config.js'
+import {API_PROXY} from './config.js'
 
 // CoinMarketCap Price API
 const btc_price_url = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/';
 
 
 // Talking to Flask API
-let post_invoice_url = API_HOST + '/api/generate_invoice';
-let check_invoice_url = API_HOST + '/api/check_invoice/';
-let wait_invoice_url = API_HOST + '/api/wait_invoice/';
+let post_invoice_url = API_PROXY + '/api/generate_invoice';
+let check_invoice_url = API_PROXY + '/api/check_invoice/';
+let wait_invoice_url = API_PROXY + '/api/wait_invoice/';
 
 const test = false;
 if (test) {
-    post_invoice_url = API_HOST + '/test/generate_invoice';
-    check_invoice_url = API_HOST + '/test/check_invoice/fake_label';
+    post_invoice_url = API_PROXY + '/test/generate_invoice';
+    check_invoice_url = API_PROXY + '/test/check_invoice/fake_label';
     wait_invoice_url = API_HOST + '/test/check_invoice/fake_label';
 }
 
