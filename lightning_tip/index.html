@@ -35,7 +35,12 @@ title: Lightning Tip
 
     <!-- Step 3: Show paid status -->
     <div id='payment_status' style="display: none">
-        <p>Invoice Paid. Thank You!</p>
+        <div id='pay_success' style="display: none">
+            <p>Invoice Paid. Thank You!</p>
+        </div>
+        <div id='pay_fail' style="display: none">
+            <p>Too Slow! Invoice Expired.</p>
+        </div>
     </div>
     <br>
     <div class='info_footer'>

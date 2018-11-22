@@ -13,7 +13,7 @@ const test = false;
 if (test) {
     post_invoice_url = API_PROXY + '/test/generate_invoice';
     check_invoice_url = API_PROXY + '/test/check_invoice/fake_label';
-    wait_invoice_url = API_HOST + '/test/check_invoice/fake_label';
+    wait_invoice_url = API_PROXY + '/test/check_invoice/fake_label';
 }
 
 // 
@@ -118,6 +118,13 @@ function updateExpiration(expiration) {
 
     // Find the distance between now and the count down date
     var distance = expiration - now;
+
+    if (distance <= 0) {
+        distance = 0;
+        hide_element('bolt11_invoice');
+        show_element('payment_status');
+        show_element('pay_fail');
+    }
     var minutes = Math.floor((distance % (60 * 60)) / 60);
     var seconds = Math.floor(distance % 60);
     
@@ -125,7 +132,6 @@ function updateExpiration(expiration) {
     // Set in mm:ss format
     get_elem("seconds_left").innerHTML = "" + (minutes).pad(2) + ":" + (seconds).pad(2);
 }
-
 
 // Process input amount and make bolt 11 invoice
 function processAmount() {
@@ -152,19 +158,26 @@ function processAmount() {
         let label = data.label;
         let bolt11 = data.bolt11;
         const now = Math.round((new Date().getTime()) / 1000);
-        let expires = now + 600;
+        let expires = now + expiry;
 
         hide_element('make_invoice');
         get_elem('bolt11_inv').innerHTML = bolt11;
         show_element('bolt11_invoice');
 
-        setInterval(function() { updateExpiration(expires) }, 1);
+        var timerId = setInterval(function() { updateExpiration(expires) }, 1000);
+
+        // Clear the timer eventually
+        setTimeout(function() {clearInterval(timerId)}, (expiry+1)*1000);
 
         wait_invoice_url = wait_invoice_url + label
+
         // Wait for invoice completion
         client.get(wait_invoice_url, function(json_response) {
+            clearInterval(timerId);
             hide_element('bolt11_invoice');
             show_element('payment_status');
+            show_element('pay_success');
+            hide_element('pay_fail');
         });
     });
 }
