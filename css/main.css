@@ -35,7 +35,7 @@ ul.posts li { list-style: none; }
 hr {
     height: 5px;
     margin-left: auto;
-    margin-right: auto;
+    margin-right: 20%;
     border: none;
     background-color: lightblue;
 }
@@ -57,10 +57,7 @@ hr {
 }
 
 .lightning_info {
-    width: 90%;
-    margin-left: 10%;
     font-size:.9em;
-    text-align: center;
 }
 
 .tip_parts {
@@ -68,23 +65,20 @@ hr {
     font-size: 0.9em;
 }
 
-.ln_table {
+table.ln_table {
     margin-bottom: 15px;
     font-family: 'Arial';
 }
 
 table {
-    width: 80%;
 }
 
 th {
-    width: auto; 
     background: lightblue;
     border-color: white;
 }
 
 tr {
-    width: auto; 
     border: 1px solid #999;
     padding: 0.5rem;
 }
