@@ -166,18 +166,24 @@ function processAmount() {
 
         var timerId = setInterval(function() { updateExpiration(expires) }, 1000);
 
-        // Clear the timer eventually
-        setTimeout(function() {clearInterval(timerId)}, (expiry+1)*1000);
+        // Clear the timer after it's not longer needed
+        setTimeout(function() {clearInterval(timerId)}, (expiry+2)*1000);
 
+        // TODO - could also use polling solution
         wait_invoice_url = wait_invoice_url + label
 
         // Wait for invoice completion
         client.get(wait_invoice_url, function(json_response) {
-            clearInterval(timerId);
-            hide_element('bolt11_invoice');
-            show_element('payment_status');
-            show_element('pay_success');
-            hide_element('pay_fail');
+            let data = JSON.parse(json_response);
+
+            // If we get a paid response
+            if (data.status === 'paid') {
+                clearInterval(timerId);
+                hide_element('bolt11_invoice');
+                show_element('payment_status');
+                show_element('pay_success');
+                hide_element('pay_fail');
+            }
         });
     });
 }
