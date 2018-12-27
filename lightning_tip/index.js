@@ -12,9 +12,12 @@ let wait_invoice_url = API_PROXY + '/api/wait_invoice/';
 const test = false;
 if (test) {
     post_invoice_url = API_PROXY + '/test/generate_invoice';
-    check_invoice_url = API_PROXY + '/test/check_invoice/fake_label';
-    wait_invoice_url = API_PROXY + '/test/check_invoice/fake_label';
+    check_invoice_url = API_PROXY + '/test/check_invoice/';
+    wait_invoice_url = API_PROXY + '/test/check_invoice/';
 }
+
+// global list of timers to keep track of
+var timers = {}
 
 // 
 //  Shortcut methods - who needs jQuery
@@ -133,6 +136,44 @@ function updateExpiration(expiration) {
     get_elem("seconds_left").innerHTML = "" + (minutes).pad(2) + ":" + (seconds).pad(2);
 }
 
+function checkInvoice(label) {
+    let invoice_url = check_invoice_url + label;
+    let lbl = label;
+    
+    // Wait for invoice completion
+    let client = new HttpClient();
+    client.get(invoice_url, function(json_response) {
+        let data = JSON.parse(json_response);
+
+        console.log("Status is " + JSON.stringify(data, null, 4));
+
+        // If we get a paid response
+        if (data.status === 'paid') {
+            // clear timers associated with that invoice
+            for (let id of timers[lbl]) {
+                clearInterval(id);
+            }
+            hide_element('bolt11_invoice');
+            show_element('payment_status');
+            show_element('pay_success');
+            hide_element('pay_fail');
+        }
+    });
+}
+
+// Wrapper around setInterval for us to keep track of timers globally
+function registerInterval(key, func, interval) {
+    let id = setInterval(func, interval);
+    // Can have multiple timers on the same key
+    if (timers[key]) {
+        timers[key].push(id);
+    } else {
+        timers[key] = [id];
+    }
+    return id;
+}
+
+
 // Process input amount and make bolt 11 invoice
 function processAmount() {
     
@@ -164,16 +205,23 @@ function processAmount() {
         get_elem('bolt11_inv').innerHTML = bolt11;
         show_element('bolt11_invoice');
 
-        var timerId = setInterval(function() { updateExpiration(expires) }, 1000);
+        var timerCountdownId = registerInterval(label, function() { updateExpiration(expires) }, 1000);
 
         // Clear the timer after it's not longer needed
-        setTimeout(function() {clearInterval(timerId)}, (expiry+2)*1000);
+        setTimeout(function() {clearInterval(timerCountdownId)}, (expiry+2)*1000);
 
-        // TODO - could also use polling solution
-        wait_invoice_url = wait_invoice_url + label
+        // Settle for a polling solution
+        var timerCheckInvoiceId = registerInterval(label, function() { checkInvoice(label) }, 3000);
+        
+        // Clear the timer after it's not longer needed
+        setTimeout(function() {clearInterval(timerCheckInvoiceId)}, (expiry+2)*1000);
 
-        // Wait for invoice completion
-        client.get(wait_invoice_url, function(json_response) {
+        /*
+
+        // Wait for invoice completion - at risk of server timeout,
+        // not a wise way to implement
+        let wait_url = wait_invoice_url + label
+        client.get(wait_url, function(json_response) {
             let data = JSON.parse(json_response);
 
             // If we get a paid response
@@ -185,6 +233,8 @@ function processAmount() {
                 hide_element('pay_fail');
             }
         });
+
+        */
     });
 }
 
