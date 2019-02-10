@@ -187,7 +187,8 @@ function processAmount() {
 
     let post_data = {
         'msatoshi': amount_msatoshi,
-        'expiry': expiry
+        'expiry': expiry,
+        'description': 'Lightning Tip For Conor conscott Scott'
     }
     
     let client = new HttpClient();
