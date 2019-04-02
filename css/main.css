@@ -35,7 +35,7 @@ ul.posts li { list-style: none; }
 hr {
     height: 5px;
     margin-left: auto;
-    margin-right: 20%;
+    margin-right: auto;
     border: none;
     background-color: lightblue;
 }
@@ -70,7 +70,8 @@ table.ln_table {
     font-family: 'Arial';
 }
 
-table {
+table.ln_table td, table th {
+    padding: 5px 10px;
 }
 
 th {
