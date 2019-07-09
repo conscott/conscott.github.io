@@ -206,6 +206,9 @@ function processAmount() {
         get_elem('bolt11_inv').innerHTML = bolt11;
         show_element('bolt11_invoice');
 
+        // Make qr code
+        let qrcode = new QRCode(document.getElementById('qrcode'), bolt11);
+
         var timerCountdownId = registerInterval(label, function() { updateExpiration(expires) }, 1000);
 
         // Clear the timer after it's not longer needed
@@ -216,6 +219,7 @@ function processAmount() {
         
         // Clear the timer after it's not longer needed
         setTimeout(function() {clearInterval(timerCheckInvoiceId)}, (expiry+2)*1000);
+
 
         /*
 
@@ -259,6 +263,7 @@ function copyBoltToClipboard() {
         }
     }
 }
+
 
 setUsdValue();
 

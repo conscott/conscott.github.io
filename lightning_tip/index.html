@@ -24,8 +24,10 @@ title: Lightning Tip
     <!-- Step 2: Display Bolt 11 Invoice -->
     <div id="bolt11_invoice" style="display: none">
         <p>Bolt 11 Invoice</p>
+        <div id="qrcode"></div>
+        <br>
         <div id="bolt11_inv" class="bolt"></div>
-        <button type="button" id="copy_invoice">Copy To Clipboard!</button>
+        <button type="button" id="copy_invoice">Copy To Clipboard</button>
         <br>
         <div style="font-size: 0.7em">Peer: 02251c2b931203848152b1c52e63ee91c74f53b0bfa8dd634a9b016d7b77c5afa9@104.248.136.82:9735</div>
         <br>
@@ -51,4 +53,5 @@ title: Lightning Tip
     </div>
 </div>
 
+<script src="./qrcode.min.js"></script>
 <script type="module" src="./index.js"></script>
