@@ -19,9 +19,9 @@ if (test) {
 // global list of timers to keep track of
 var timers = {}
 
-// 
+//
 //  Shortcut methods - who needs jQuery
-//  
+//
 function get_elem(element_name) {
     return document.getElementById(element_name)
 }
@@ -47,28 +47,28 @@ var HttpClient = function() {
     // GET
     this.get = function(aUrl, aCallback) {
         var anHttpRequest = new XMLHttpRequest();
-        anHttpRequest.onreadystatechange = function() { 
+        anHttpRequest.onreadystatechange = function() {
             if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
                 aCallback(anHttpRequest.responseText);
         }
 
-        anHttpRequest.open( "GET", aUrl, true );            
+        anHttpRequest.open( "GET", aUrl, true );
         anHttpRequest.send( null );
     }
 
     this.post = function(aUrl, payload, aCallback) {
         var anHttpRequest = new XMLHttpRequest();
-        anHttpRequest.onreadystatechange = function() { 
+        anHttpRequest.onreadystatechange = function() {
             if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
                 aCallback(anHttpRequest.responseText);
         }
-        anHttpRequest.open("POST", aUrl, true );            
+        anHttpRequest.open("POST", aUrl, true );
         anHttpRequest.setRequestHeader("Content-Type", "application/json");
         anHttpRequest.send(payload);
     }
 }
 
-// Set the USD value of the Bolt11 invoice based 
+// Set the USD value of the Bolt11 invoice based
 // CoinMarketCap API price
 function setUsdValue() {
     let amount =  Number(get_elem('amount').value);
@@ -94,7 +94,7 @@ function setUsdValue() {
     }
 
     get_elem('submit_amount').disabled = false;
-    
+
     // Fetch price data and set element
     let client = new HttpClient();
     client.get(btc_price_url, function(json_response) {
@@ -130,7 +130,7 @@ function updateExpiration(expiration) {
     }
     var minutes = Math.floor((distance % (60 * 60)) / 60);
     var seconds = Math.floor(distance % 60);
-    
+
 
     // Set in mm:ss format
     get_elem("seconds_left").innerHTML = "" + (minutes).pad(2) + ":" + (seconds).pad(2);
@@ -139,7 +139,7 @@ function updateExpiration(expiration) {
 function checkInvoice(label) {
     let invoice_url = check_invoice_url + label;
     let lbl = label;
-    
+
     // Wait for invoice completion
     let client = new HttpClient();
     client.get(invoice_url, function(json_response) {
@@ -176,12 +176,12 @@ function registerInterval(key, func, interval) {
 
 // Process input amount and make bolt 11 invoice
 function processAmount() {
-    
+
     let amount =  Number(get_elem('amount').value);
     if (isNaN(amount) || amount <= 0) {
         return;
     }
-    
+
     let amount_msatoshi = amount * 1000;
     let expiry = 600;
 
@@ -190,7 +190,7 @@ function processAmount() {
         'expiry': expiry,
         'description': 'Lightning Tip For Conor conscott Scott'
     }
-    
+
     let client = new HttpClient();
     client.post(post_invoice_url, JSON.stringify(post_data), function(json_response) {
 
@@ -216,13 +216,12 @@ function processAmount() {
 
         // Settle for a polling solution
         var timerCheckInvoiceId = registerInterval(label, function() { checkInvoice(label) }, 3000);
-        
+
         // Clear the timer after it's not longer needed
         setTimeout(function() {clearInterval(timerCheckInvoiceId)}, (expiry+2)*1000);
 
 
         /*
-
         // Wait for invoice completion - at risk of server timeout,
         // not a wise way to implement
         let wait_url = wait_invoice_url + label
@@ -238,7 +237,6 @@ function processAmount() {
                 hide_element('pay_fail');
             }
         });
-
         */
     });
 }
@@ -246,8 +244,6 @@ function processAmount() {
 
 // Copy bolt11 text to clipboard
 function copyBoltToClipboard() {
-
-    // Select it
     var range = document.createRange();
     range.selectNode(get_elem('bolt11_inv'));
     window.getSelection().addRange(range);
@@ -264,9 +260,19 @@ function copyBoltToClipboard() {
     }
 }
 
+// If WebLn Injected, use that
+const openWalletPay = async() => {
+  let bolt11 = get_elem('bolt11_inv');
+  let provider = await WebLN.requestProvider();
+  if (provider) {
+    let send = await provider.sendPayment(bolt11.innerHTML);
+  }
+}
+
 
 setUsdValue();
 
 get_elem('amount').addEventListener("input", setUsdValue);
 get_elem('submit_amount').addEventListener("click", processAmount);
 get_elem('copy_invoice').addEventListener("click", copyBoltToClipboard);
+get_elem('wallet_pay').addEventListener("click", openWalletPay);
