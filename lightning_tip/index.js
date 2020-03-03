@@ -18,6 +18,7 @@ if (test) {
 
 // global list of timers to keep track of
 var timers = {}
+var webln;
 
 //
 //  Shortcut methods - who needs jQuery
@@ -28,6 +29,10 @@ function get_elem(element_name) {
 
 function show_element(element_name) {
     get_elem(element_name).style.display = 'block';
+}
+
+function show_element_inline(element_name) {
+    get_elem(element_name).style.display = 'inline';
 }
 
 function hide_element(element_name) {
@@ -70,7 +75,7 @@ var HttpClient = function() {
 
 // Set the USD value of the Bolt11 invoice based
 // CoinMarketCap API price
-function setUsdValue() {
+const setUsdValue = async() => {
     let amount =  Number(get_elem('amount').value);
     if (isNaN(amount)) {
         get_elem('amount_usd').value = "Not a number";
@@ -219,28 +224,8 @@ function processAmount() {
 
         // Clear the timer after it's not longer needed
         setTimeout(function() {clearInterval(timerCheckInvoiceId)}, (expiry+2)*1000);
-
-
-        /*
-        // Wait for invoice completion - at risk of server timeout,
-        // not a wise way to implement
-        let wait_url = wait_invoice_url + label
-        client.get(wait_url, function(json_response) {
-            let data = JSON.parse(json_response);
-
-            // If we get a paid response
-            if (data.status === 'paid') {
-                clearInterval(timerId);
-                hide_element('bolt11_invoice');
-                show_element('payment_status');
-                show_element('pay_success');
-                hide_element('pay_fail');
-            }
-        });
-        */
     });
 }
-
 
 // Copy bolt11 text to clipboard
 function copyBoltToClipboard() {
@@ -260,17 +245,25 @@ function copyBoltToClipboard() {
     }
 }
 
-// If WebLn Injected, use that
+// Try to pay with JOULE or other webln thing
 const openWalletPay = async() => {
   let bolt11 = get_elem('bolt11_inv');
-  let provider = await WebLN.requestProvider();
-  if (provider) {
-    let send = await provider.sendPayment(bolt11.innerHTML);
-  }
+  let send = await webln.sendPayment(bolt11.innerHTML);
 }
+
+// Add the "Open Wallet" button if WebLN detected
+const setupLNProvier = async() => {
+  webln = await WebLN.requestProvider();
+  if (webln) {
+    console.log("Detected WebLN provider!");
+    show_element_inline('wallet_pay');
+    get_elem('wallet_pay').disabled = false;
+  }
+};
 
 
 setUsdValue();
+setupLNProvier();
 
 get_elem('amount').addEventListener("input", setUsdValue);
 get_elem('submit_amount').addEventListener("click", processAmount);
