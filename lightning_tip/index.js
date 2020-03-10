@@ -1,7 +1,7 @@
 import {API_PROXY} from './config.js'
 
 // CoinMarketCap Price API
-const btc_price_url = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/';
+const btc_price_url = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd';
 
 
 // Talking to Flask API
@@ -104,7 +104,7 @@ const setUsdValue = async() => {
     let client = new HttpClient();
     client.get(btc_price_url, function(json_response) {
         let data = JSON.parse(json_response);
-        let btc_price = Number(data[0].price_usd);
+        let btc_price = Number(data.bitcoin.usd);
         let tip_amout = 0.0;
         let amount_no_trunc = btc_price * (amount / 100000000);
         let tip_amount;
