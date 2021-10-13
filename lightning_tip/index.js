@@ -214,6 +214,7 @@ function processAmount() {
         // Make qr code
         let qrcode = new QRCode(document.getElementById('qrcode'), bolt11);
 
+
         var timerCountdownId = registerInterval(label, function() { updateExpiration(expires) }, 1000);
 
         // Clear the timer after it's not longer needed
