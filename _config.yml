@@ -1,3 +1,13 @@
 name: Conor
 markdown: kramdown
 permalink: /blog/:year/:month/:day/:title
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - README.md
+  - run_local.sh
+  - upload_site.sh
+  - conscott.info.tar
+  - .sisyphus

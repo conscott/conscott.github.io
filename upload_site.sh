@@ -1,15 +1,25 @@
 #!/bin/bash
+#
+# Build and deploy conscott.info to the webnode.
+# Pass --dry-run / -n to preview the rsync diff without making changes.
+#
+set -euo pipefail
 
-# clean site
-rm -rf _site  conscott.info.tar
+DRY_RUN=""
+if [[ "${1:-}" == "--dry-run" || "${1:-}" == "-n" ]]; then
+  DRY_RUN="--dry-run"
+  echo "DRY RUN — nothing will be uploaded or deleted"
+fi
 
-# Build site to _site
+rm -rf _site
 bundle exec jekyll build
 
-tar -cvf conscott.info.tar _site
+rm -rf _site/assets   # auto-generated default-theme CSS we don't reference
+rm -f  _site/CNAME    # GitHub Pages convention; meaningless on the webnode
 
-# Upload it to remote node
-scp conscott.info.tar root@webnode:~
+rsync -avz --delete --human-readable $DRY_RUN \
+  _site/ root@webnode:/var/www/conscott.info/
 
-# Untar it in webserver dir
-ssh root@webnode "tar -xvf ~/conscott.info.tar -C /var/www/conscott.info/ --transform='s/_site\///g'"
+if [[ -z "$DRY_RUN" ]]; then
+  echo "Deployed to https://conscott.info/"
+fi
